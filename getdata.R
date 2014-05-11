@@ -21,7 +21,8 @@ make.householdpower <- function() {
     data.txtfile
   }
   ## perform additional preprocessing not done by read.table()
-  data.clean <- function(frame) {
+  data.clean <- function() {
+    frame <- data.read()
     frame$Date <- strptime(frame$Date, "%d/%m/%Y", tz="UTC")
     frame$Time <- strptime(frame$Time, "%H:%M:%S", tz="UTC")
     frame
@@ -30,21 +31,25 @@ make.householdpower <- function() {
   ## returning a memoized copy if possible
   data.read <- function() {
     if (is.null(d)) {
-      d <<- data.clean(read.table(data.unzip(),
-                                  sep=";",
-                                  header=TRUE,
-                                  na.strings="?",
-                                  nrows=2075259,
-                                  comment.char=""))
+      d <<- read.table(data.unzip(),
+                       sep=";",
+                       header=TRUE,
+                       na.strings="?",
+                       nrows=2075259,
+                       comment.char="")
     }
     d
   }
   ## return the subset of the data relevant to the given dates
   data.dates <- function(start, end) {
-    frame <- data.read()
-    frame[frame$Date >= start & frame$Date <= end,]
+    daterange <- strptime(c(start, end), "%Y%m%d", tz="UTC")
+    frame <- data.clean()
+    pred <- !is.na(frame$Date) & (frame$Date >= daterange[1] &
+                                  frame$Date <= daterange[2])
+    frame[pred,]
   }
   list(dates=data.dates,
-       get=data.read)
+       cleaned=data.clean,
+       raw=data.read)
 }
 householdpower <- make.householdpower()
