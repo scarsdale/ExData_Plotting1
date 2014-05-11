@@ -5,8 +5,10 @@ if (!exists("make.png")) {
   source("makepng.R")
 }
 ## a line graph of submetering (3 variables) from 1 Feb to 2 Feb 2007
-plot3 <- function() {
-  dat <- householdpower$dates("20070201", "20070203")
+plot3 <- function(dat=NULL) {
+  if (is.null(dat)) {
+    dat <- householdpower$dates("20070201", "20070203")
+  }
   submetering <- c("Sub_metering_1",
                    "Sub_metering_2",
                    "Sub_metering_3")

@@ -5,8 +5,10 @@ if (!exists("make.png")) {
   source("makepng.R")
 }
 ## a line graph of global active power from 1 Feb to 2 Feb 2007
-plot2 <- function() {
-  dat <- householdpower$dates("20070201", "20070203")
+plot2 <- function(dat=NULL) {
+  if (is.null(dat)) {
+    dat <- householdpower$dates("20070201", "20070203")
+  }
   plot(dat$datetime,
        dat[["Global_active_power"]],
        ylab="Global Active Power (kilowatts)",
