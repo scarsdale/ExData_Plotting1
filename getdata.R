@@ -24,8 +24,9 @@ make.householdpower <- function() {
   ## perform additional preprocessing not done by read.table()
   data.clean <- function() {
     frame <- data.read()
-    frame$Date <- strptime(frame$Date, "%d/%m/%Y", tz="UTC")
-    frame$Time <- strptime(frame$Time, "%H:%M:%S", tz="UTC")
+    frame$datetime <- strptime(paste(frame$Date, frame$Time, sep=" "),
+                               "%d/%m/%y %H:%H:%S",
+                               tz="UTC")
     frame
   }  
   ## read the data file into a data frame,
@@ -48,8 +49,8 @@ make.householdpower <- function() {
     if (is.null(bydaterange[[rangestr]])) {
       daterange <- strptime(c(start, end), "%Y%m%d", tz="UTC")
       frame <- data.clean()
-      pred <- !is.na(frame$Date) & (frame$Date >= daterange[1] &
-                                    frame$Date <= daterange[2])
+      pred <- !is.na(frame$Date) & (frame$datetime >= daterange[1] &
+                                    frame$datetime <= daterange[2])
       bydaterange[[rangestr]] <<- frame[pred,]
     }
     bydaterange[[rangestr]]
