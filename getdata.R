@@ -25,7 +25,7 @@ make.householdpower <- function() {
   data.clean <- function() {
     frame <- data.read()
     frame$datetime <- strptime(paste(frame$Date, frame$Time, sep=" "),
-                               "%d/%m/%y %H:%H:%S",
+                               "%d/%m/%Y %H:%M:%S",
                                tz="UTC")
     frame
   }  
