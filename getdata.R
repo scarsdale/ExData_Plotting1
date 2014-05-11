@@ -4,6 +4,7 @@ make.householdpower <- function() {
   url <- paste("https://d396qusza40orc.cloudfront.net",
                data.zipfile, sep="/")
   d <- NULL
+  bydaterange <- list()
   ## download the zip file to the current working directory,
   ## if it does not already exist
   data.download <- function() {
@@ -40,13 +41,18 @@ make.householdpower <- function() {
     }
     d
   }
-  ## return the subset of the data relevant to the given dates
+  ## return the subset of the data relevant to the given dates,
+  ## using memoized data if possible
   data.dates <- function(start, end) {
-    daterange <- strptime(c(start, end), "%Y%m%d", tz="UTC")
-    frame <- data.clean()
-    pred <- !is.na(frame$Date) & (frame$Date >= daterange[1] &
-                                  frame$Date <= daterange[2])
-    frame[pred,]
+    rangestr <- paste(start, end, sep="-")
+    if (is.null(bydaterange[[rangestr]])) {
+      daterange <- strptime(c(start, end), "%Y%m%d", tz="UTC")
+      frame <- data.clean()
+      pred <- !is.na(frame$Date) & (frame$Date >= daterange[1] &
+                                    frame$Date <= daterange[2])
+      bydaterange[[rangestr]] <<- frame[pred,]
+    }
+    bydaterange[[rangestr]]
   }
   list(dates=data.dates,
        cleaned=data.clean,
