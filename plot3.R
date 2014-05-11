@@ -5,7 +5,7 @@ if (!exists("make.png")) {
   source("makepng.R")
 }
 ## a line graph of submetering (3 variables) from 1 Feb to 2 Feb 2007
-plot3 <- function(dat=NULL) {
+plot3 <- function(dat=NULL, bty="o") {
   if (is.null(dat)) {
     dat <- householdpower$dates("20070201", "20070203")
   }
@@ -23,7 +23,7 @@ plot3 <- function(dat=NULL) {
        )
   lines(dat$datetime, dat[[submetering[2]]], col=colors[2])
   lines(dat$datetime, dat[[submetering[3]]], col=colors[3])
-  legend("topright", submetering, col=colors, lty=rep(1, 3))
+  legend("topright", submetering, col=colors, lty=rep(1, 3), bty=bty)
 }
 plot3png <- function() {
   make.png("plot3", plot3)
